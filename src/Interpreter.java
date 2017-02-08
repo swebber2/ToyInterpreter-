@@ -72,7 +72,18 @@ public class Interpreter {
 	 * convertNameToInstance(""hey"") returns "hey"
 	 */
 	public Object convertNameToInstance(String name){
-		return null;
+		if (mySymbolTable.containsKey(name)){
+			return mySymbolTable.get(name);
+		}
+		if(name.charAt(0)== '"'){
+			String instance = "";
+			for(int i=0; i< name.length(); i++){
+				if(name.charAt(i)!= '"')
+					instance = instance + name.charAt(i);
+			}
+			return instance;
+		}
+		return Integer.parseInt(name);
 	}
 	
 	
