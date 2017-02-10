@@ -46,16 +46,18 @@ public class ReflectionUtilities {
 	 * using isInstance.
 	 */
 	public static boolean typesMatch(Class<?>[] formals, Object[] actuals){
+		if(formals.length != actuals.length){
+			return false;
+		}
 
 		for(int i=0; i < formals.length; i++){
 			boolean x = typesMatchInts(formals[i],actuals[i]);
-			if (x == false){
-				boolean y = formals[i].isInstance(actuals[i]);
-				if(y == false){
+			boolean y = formals[i].isInstance(actuals[i]);
+				if(x == false && y == false){
 					return false;
 				}
 			}
-		}
+		
 
 
 		return true;
@@ -78,12 +80,14 @@ public class ReflectionUtilities {
 	 */
 	public static Object createInstance(String name, Object[] args){
 		try {
+			
 			Class theClass = Class.forName(name);
 			Constructor[] theConstructors = theClass.getConstructors();
 			for(int i=0; i < theConstructors.length; i++){
 				if(typesMatch(theConstructors[i].getParameterTypes(), args)){
 					try {
-						return theConstructors[i].newInstance();
+					
+						return theConstructors[i].newInstance(args);
 					} catch (InstantiationException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -127,9 +131,10 @@ public class ReflectionUtilities {
 		Method[] theMethods = targetClass.getMethods();
 		for(int i = 0; i < theMethods.length; i++){
 			if(theMethods[i].getName() == methodName){
-				if(theMethods[i].getParameterTypes().equals(args)){
+				
+				if(typesMatch(theMethods[i].getParameterTypes(), args)){
 					try {
-						theMethods[i].invoke(target, methodName);
+						return theMethods[i].invoke(target, args);
 					} catch (IllegalAccessException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

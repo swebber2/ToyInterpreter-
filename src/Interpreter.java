@@ -75,11 +75,15 @@ public class Interpreter {
 		if (mySymbolTable.containsKey(name)){
 			return mySymbolTable.get(name);
 		}
+		//System.out.println(name);
+		//System.out.println(name.charAt(0));
 		if(name.charAt(0)== '"'){
+			//System.out.println("here");
 			String instance = "";
 			for(int i=0; i< name.length(); i++){
 				if(name.charAt(i)!= '"')
 					instance = instance + name.charAt(i);
+				//	System.out.println("instance");
 			}
 			return instance;
 		}
@@ -92,7 +96,12 @@ public class Interpreter {
 	 * Simply call the other helper method of the same name on each item in the array.
 	 */
 	public Object[] convertNameToInstance(String[] names){
-		return null;
+		Object[] objects = new Object[names.length];
+		for(int i=0; i < names.length; i++){
+			objects[i] = convertNameToInstance(names[i]);
+			
+		}
+		return objects;
 	}
 	
 	
@@ -103,7 +112,11 @@ public class Interpreter {
 	 * The String that is returned should be a basic message telling what happened.
 	 */
 	public String makeObject(ParseResults parse){	
-		return null;
+	
+		Object newObject = ReflectionUtilities.createInstance(parse.className, convertNameToInstance(parse.argumentNames));
+		System.out.println(newObject);
+		mySymbolTable.put(parse.objectName,newObject);
+		return "The " + parse.objectName + " object was made and added to the symbol table." ;
 	}
 	
 	/*
@@ -118,7 +131,9 @@ public class Interpreter {
 	 * and replacing it with something else.
 	 */
 	public String callMethod(ParseResults parse){
-		return null;
+		Object newObject = ReflectionUtilities.callMethod(convertNameToInstance(parse.objectName), parse.methodName, convertNameToInstance(parse.argumentNames));
+		mySymbolTable.put(newObject.toString(), newObject);
+		return "I called the method, the result is " + newObject;
 	}
 
 }
