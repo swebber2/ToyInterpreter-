@@ -126,13 +126,15 @@ public class ReflectionUtilities {
 	 * you find one that matches, invoke it.
 	 */
 	public static Object callMethod (Object target, String methodName, Object[] args)
+	
 	{
+		//System.out.println(target.toString() + " " + methodName + " " + args.toString());
 		Class targetClass = target.getClass();
 		Method[] theMethods = targetClass.getMethods();
 		for(int i = 0; i < theMethods.length; i++){
-			if(theMethods[i].getName() == methodName){
-				
+			if(theMethods[i].getName().equals(methodName)){
 				if(typesMatch(theMethods[i].getParameterTypes(), args)){
+					//System.out.println("We get in here!");
 					try {
 						return theMethods[i].invoke(target, args);
 					} catch (IllegalAccessException e) {

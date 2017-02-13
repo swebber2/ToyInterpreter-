@@ -72,6 +72,7 @@ public class Interpreter {
 	 * convertNameToInstance(""hey"") returns "hey"
 	 */
 	public Object convertNameToInstance(String name){
+		//System.out.println(name);
 		if (mySymbolTable.containsKey(name)){
 			return mySymbolTable.get(name);
 		}
@@ -87,6 +88,7 @@ public class Interpreter {
 			}
 			return instance;
 		}
+		System.out.println(name);
 		return Integer.parseInt(name);
 	}
 	
@@ -114,9 +116,10 @@ public class Interpreter {
 	public String makeObject(ParseResults parse){	
 	
 		Object newObject = ReflectionUtilities.createInstance(parse.className, convertNameToInstance(parse.argumentNames));
-		System.out.println(newObject);
+		//System.out.println(newObject);
 		mySymbolTable.put(parse.objectName,newObject);
-		return "The " + parse.objectName + " object was made and added to the symbol table." ;
+		//System.out.println("This is the object name: " + parse.objectName);
+		return "The " + parse.objectName + " object was made and added to the symbol table with value: " + newObject ;
 	}
 	
 	/*
@@ -131,8 +134,11 @@ public class Interpreter {
 	 * and replacing it with something else.
 	 */
 	public String callMethod(ParseResults parse){
+	
 		Object newObject = ReflectionUtilities.callMethod(convertNameToInstance(parse.objectName), parse.methodName, convertNameToInstance(parse.argumentNames));
-		mySymbolTable.put(newObject.toString(), newObject);
+		
+			mySymbolTable.put(parse.answerName, newObject);
+
 		return "I called the method, the result is " + newObject;
 	}
 
